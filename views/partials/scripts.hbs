@@ -2,7 +2,7 @@
     <script>
     const socket = io();
 
-    //Productos
+    //Productos 
     socket.on("message_backend", (data)=>{
         if(window.location.pathname == "/api/inicio/formulario"){
         document.querySelector("#producto").innerHTML = " ";
