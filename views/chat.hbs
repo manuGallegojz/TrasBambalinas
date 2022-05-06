@@ -1,0 +1,41 @@
+<div class="d-flex justify-content-between container mt-3">
+
+    <div class="col-4">
+
+        <h1 class="titulos-medium ms-3">Chat</h1>
+
+        <form onsubmit="return addInfo()" data-spy="scroll" class="border rounded p-3 mt-4">
+            <!-- Titulo del Producto -->
+            <div class="form-outline mb-4">
+                <label class="form-label" for="name">Nombre</label>
+                <input type="text" id="name" class="form-control" name="name"/>
+            </div>
+
+            <!-- Precio del Producto -->
+            <div class="form-outline mb-4">
+                <label class="form-label" for="email">Email</label>
+                <input type="text" id="email" class="form-control" name="email" required/>
+            </div>
+
+            <!-- Stock del Producto -->
+            <div class="form-outline mb-4">
+                <label class="form-label" for="message">Mensaje</label>
+                <input type="text" id="message" class="form-control" name="message"/>
+            </div>
+
+            <!-- Submit button -->
+            <button type="submit" class="btn btn-primary btn-block">Enviar</button>
+        </form>
+
+    </div>
+
+    <div class="col-6">
+
+        <h1 class="titulos-medium ms-3">Mensajes</h1>
+
+        <div class="border rounded p-3 mt-4 h-75 navbar-nav-scroll" style="height: 150px;" id="chat"></div>
+
+    </div>
+
+
+</div>

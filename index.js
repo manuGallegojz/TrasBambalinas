@@ -4,6 +4,7 @@ const multer = require("multer");
 const handlebars = require("express-handlebars");
 const express = require("express");
 const app = express();
+const fs = require("fs");
 
 //server
 
@@ -44,12 +45,25 @@ const nuevoArchivo = new Contenedor("./productos.json");
 
 //conexion
 
+let mensajeJSON = fs.readFileSync("./mensajes.json", "utf-8");
+let mensaje = JSON.parse(mensajeJSON);
+
 io.on("connection", (socket)=>{
+
   socket.emit("message_backend", nuevoArchivo.getAll())
 
-  socket.on("message_cliente", (data)=>{
+  socket.emit("chat_back", mensaje);
+
+  socket.on("chat_mensaje", (data)=>{
     console.log(data)
   })
+
+  socket.on("data_msg", (data) => {
+    console.log(data)
+    mensaje.push(data);
+    fs.writeFileSync("./mensajes.json", JSON.stringify(mensaje), "utf-8")
+    io.sockets.emit("chat_back", mensaje)
+  });
 })
 
 //seteo la plantilla
