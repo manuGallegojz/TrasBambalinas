@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('../partials/head.ejs') %> 
+<body>
+    <%- include('../partials/nav.ejs') %> 
+    <% if(mostrar == "true"){%>
+    <%- include('../form.ejs') %> 
+    <% }else{%>
+    <%- include('../error.ejs') %>
+    <% }%>
+    <%- include('../partials/footer.ejs') %> 
+    <%- include('../partials/scripts.ejs') %> 
+</body>
+</html>

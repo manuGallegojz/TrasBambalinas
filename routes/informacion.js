@@ -1,40 +1,29 @@
 const express = require("express")
-const handlebars = require("express-handlebars");
-const app = express()
+const app = express(); 
 
-//ROUTER
+const ContenedorCarrito = require("../classes/cart.class.js");
+const nuevoCarrito = new ContenedorCarrito("./cart.json");
+
+app.set("view engine", "ejs");
+app.set("views", "../views")
 
 const {Router} = express;
 
 let router = new Router()
 
-//Seteo la plantilla
-
-app.engine(
-    "hbs",
-    handlebars.engine({
-        extname: "hbs",
-        layoutsDir: __dirname + "../views/layouts",
-        defaultLayout: "index",
-        partialsDir: __dirname + "../views/partials",
-    })
-)
-app.set('views', './views');
-app.set('view engine', 'hbs');
-
 
 // RUTAS
 
 router.get("/servicios", (req, res)=>{
-    res.render("servicios")
+    res.render("pages/servicios.ejs")
 })
 
 router.get("/chat", (req, res)=>{
-    res.render("chat", { root: '.' })
+    res.render("pages/chat.ejs", { root: '.' })
 })
 
 router.get("/contacto", (req, res)=>{
-    res.render("contacto")
+    res.render("pages/contacto.ejs")
 })
 
 //exportando router

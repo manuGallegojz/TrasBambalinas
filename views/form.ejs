@@ -2,7 +2,7 @@
 
     <h1 class="titulos-medium">Agregar Productos</h1>
 
-    <form action="/api/inicio/formulario" method="post" class="col-4 border rounded p-3 mt-4">
+    <form action="/inicio/formulario" method="post" class="col-4 border rounded p-3 mt-4">
         <!-- Titulo del Producto -->
         <div class="form-outline mb-4">
             <label class="form-label" for="title">Titulo</label>
@@ -38,6 +38,6 @@
     <h1 class="titulos-medium">Eliminar Productos</h1>
     <small class="titulos-medium text-primary">No funciona</small>
 
-        {{>productos }}
+        <%- include('./partials/productos.ejs') %> 
 
 </div>
