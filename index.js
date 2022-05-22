@@ -1,20 +1,15 @@
 //paquetes externos
 
 const multer = require("multer");
-// const handlebars = require("express-handlebars");
 const express = require("express");
 const app = express();
 const fs = require("fs");
+const knex = require("./src/dbs");
 
 //server
 
 const http = require("http");
 const server = http.createServer(app);
-
-//socket
-
-// const {Server} = require("socket.io");
-// const io = new Server(server);
 
 //Storage multer
 
@@ -56,8 +51,8 @@ app.use("/inicio", express.static(__dirname + '/public/'))
 //declarando las rutas correspondientes
 
 app.use("/inicio", carritoRutas);
-app.use("/inicio", tiendaRutas);
 app.use("/inicio", informacionRutas);
+app.use("/inicio", tiendaRutas);
 
 //rutas principales
 
@@ -80,4 +75,37 @@ app.post("/inicio", (req, res) => {
         }
     }) 
     res.render("pages/index");
+})
+
+
+const {Server} = require("socket.io");
+const io = new Server(server);
+
+//conexion
+
+io.on("connection", (socket)=>{
+
+  socket.on("data_msg", (data) => {
+    knex("messages").insert(data)
+        .then(()=>{
+            console.log("guardado!")
+        }).catch((err)=>{
+            console.log(err);
+        })
+    io.sockets.emit("chat_back", data)
+  });
+
+  knex
+    .from("messages")
+    .select("*")
+    .then((json) => {
+      socket.emit("chat_back",json)
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+  socket.on("chat_mensaje", (data)=>{
+    console.log(data)
+  })
 })

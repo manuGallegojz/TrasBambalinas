@@ -1,1 +1,33 @@
-<script src="main.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+    
+socket.on("chat_back", (data) => {
+    mensajes(data);
+    socket.emit("chat_mensaje", "Gracias por tu mensaje!");
+    });
+    const mensajes = (data) => {
+        console.log("info:" + data)
+            let html = data.map((x) => {
+            return ` 
+                <p> <strong class="text-primary">${x.email}</strong><small style="color: blue"> [${x.timestamp}]</small><em style="color: green"> : ${x.mensaje} </em></p>
+            `;
+            }).join(" ");
+            document.querySelector("#chat").innerHTML = html;
+    };
+    const addInfo = () => {
+    let fecha = new Date();
+    let objeto = {
+        nombre: document.querySelector("#name").value,
+        email: document.querySelector("#email").value,
+        mensaje: document.querySelector("#message").value
+        // timestamp: fecha.getDay() + "/" + fecha.getMonth() + "/" + fecha.getFullYear() + " " + fecha.getHours() + ":" + fecha.getMinutes() + ":" + fecha.getSeconds()
+    };
+    console.log(fecha)
+    socket.emit("data_msg", objeto);
+    document.querySelector("#name").value = "";
+    document.querySelector("#email").value = "";
+    document.querySelector("#message").value = "";
+    return false;
+    };
+</script>

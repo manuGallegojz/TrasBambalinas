@@ -1,18 +1,12 @@
-const express = require("express")
-const app = express(); 
+const express = require("express");
+const app = express()
+const fs = require("fs");
 
-const ContenedorCarrito = require("../classes/cart.class.js");
-const nuevoCarrito = new ContenedorCarrito("./cart.json");
+const {Router} = express;
+let router = new Router()
 
 app.set("view engine", "ejs");
 app.set("views", "../views")
-
-const {Router} = express;
-
-let router = new Router()
-
-
-// RUTAS
 
 router.get("/servicios", (req, res)=>{
     res.render("pages/servicios.ejs")
