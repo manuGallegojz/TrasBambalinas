@@ -81,12 +81,15 @@ app.post("/inicio", (req, res) => {
 const {Server} = require("socket.io");
 const io = new Server(server);
 
+const Contenedor = require("./classes/contenedor.class");
+const gestionMensajes = new Contenedor("../models/messages");
+
 //conexion
 
 io.on("connection", (socket)=>{
 
   socket.on("data_msg", (data) => {
-    knex("messages").insert(data)
+    gestionMensajes.save(data)
         .then(()=>{
             console.log("guardado!")
         }).catch((err)=>{
@@ -95,9 +98,7 @@ io.on("connection", (socket)=>{
     io.sockets.emit("chat_back", data)
   });
 
-  knex
-    .from("messages")
-    .select("*")
+  gestionMensajes.getAll()
     .then((json) => {
       socket.emit("chat_back",json)
     })

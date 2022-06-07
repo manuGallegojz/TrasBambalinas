@@ -2,12 +2,11 @@ const express = require("express");
 const { send } = require("express/lib/response");
 const app = express();
 
-const ContenedorCarrito = require("../classes/cart.class.js");
-const nuevoCarrito = new ContenedorCarrito("cart");
-
 const Contenedor = require("../classes/contenedor.class");
-const nuevoArchivo = new Contenedor("products");
-const knex = require("../src/dbs");
+const gestionCarrito = new Contenedor("../models/cart");
+const gestionProductos = new Contenedor("../models/products");
+
+// const knex = require("../src/dbs");
 
 const {Router} = express;
 let router = new Router();
@@ -16,74 +15,58 @@ app.set("view engine", "ejs");
 app.set("views", "../views");
 
 router.post("/carrito/:id", (req, res)=>{
-    knex("products")
-        .from('products')
-        .select("*")
-        .where({id : req.params.id})
-        .then((json)=>{
-            knex("cart").insert(json[0])
-            .then(()=>{
-                console.log("guardado!")
-            }).catch((err)=>{
-                console.log(err);
-            })
-        }).catch((err)=>{
-            console.log(err);
+    gestionProductos.getById(req.params.id).then((data)=>{
+        gestionCarrito.save(data).then(()=>{
+            console.log("guardado!")
+        }).catch((error)=>{
+            console.log("El error:" + error);
         });
+    }).catch((error)=>{
+        console.log("El error:" + error);
+    })
 
-    knex.from("cart").select("*")
-        .then((json)=>{
-            res.render("pages/carrito.ejs", {data: json});
-        }).catch((err)=>{
-            console.log(err);
-        })
+    gestionCarrito.getAll().then((data)=>{
+        console.log(data);
+        res.render("pages/carrito.ejs", {data: data})
+    }).catch((error)=>{
+        console.log("El error:" + error);
+    })
 })
 
 router.get("/carrito/:id", (req, res)=>{
-    knex("products")
-        .from('products')
-        .select("*")
-        .where({id : req.params.id})
-        .then((json)=>{
-            knex("cart").insert(json[0])
-            .then(()=>{
-                console.log("guardado!")
-            }).catch((err)=>{
-                console.log(err);
-            })
-        }).catch((err)=>{
-            console.log(err);
+    gestionProductos.getById(req.params.id).then((data)=>{
+        gestionCarrito.save(data).then(()=>{
+            console.log("guardado!")
+        }).catch((error)=>{
+            console.log("El error:" + error);
         });
+    }).catch((error)=>{
+        console.log("El error:" + error);
+    })
 
-    knex.from("cart").select("*")
-        .then((json)=>{
-            res.render("pages/carrito.ejs", {data: json});
-        }).catch((err)=>{
-            console.log(err);
-        })
+    gestionCarrito.getAll().then((data)=>{
+        console.log(data);
+        res.render("pages/carrito.ejs", {data: data})
+    }).catch((error)=>{
+        console.log("El error:" + error);
+    })
+
 })
-
 
 router.get("/carrito", (req, res)=>{
-    knex.from("cart").select("*")
-        .then((json)=>{
-            res.render("pages/carrito.ejs", {data: json});
-        }).catch((err)=>{
-            console.log(err);
-        })
+    gestionCarrito.getAll().then((data)=>{
+        console.log(data);
+        res.render("pages/carrito.ejs", {data: data})
+    }).catch((error)=>{
+        console.log("El error:" + error);
+    })
 })
 
-
 router.delete("/carrito/:id", (req, res) => {
-    knex("cart").where({id : req.params.id}).del()
-        .then((res)=>{
-            console.log("Eliminado.");
-        }).catch((err)=>{
-            console.log(err);
-        })
-    res.json({
-        resultado: "ok",
-        id: req.params.id
+    gestionCarrito.deleteById(req.params.id).then(()=>{
+        res.send({data: "Producto Eliminado."});
+    }).catch((error)=>{
+        console.log("El error:" + error);
     })
 })
 
