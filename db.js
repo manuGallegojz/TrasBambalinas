@@ -1,11 +1,12 @@
-const mongoose = require("mongoose")
+const admin = require("firebase-admin");
 
-mongoose.connect(`mongodb+srv://gallegojz:123456manuel@ecommerce-coder.eaipo.mongodb.net/ecommerce-coder?retryWrites=true&w=majority`)
+const serviceAccount = require("./database/ecommerce-coder-c7f51-firebase-adminsdk-tzfal-89ac4c1aa9.json");
 
-mongoose.connection.on("open",()=>{
-    console.log("Base de datos conectada con éxito! MONGO ATLAS")
-})
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: "http://ecommerce-coder.firebaseio.com"
+});
 
-mongoose.connection.on("error",()=>{
-    console.log("Error al conectarse a la base de datos.")
-})
+const db = admin.firestore();
+
+module.exports = db;

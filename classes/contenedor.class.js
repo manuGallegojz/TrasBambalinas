@@ -1,7 +1,10 @@
-const fs = require("fs");
-const knex = require("../src/dbs");
+// const fs = require("fs");
+// const knex = require("../src/dbs");
+const { uuid } = require('uuidv4');
 
-require("../db");
+//FIREBASE
+
+const db = require("../db");
 
 class Contenedor{
     constructor(archivo){
@@ -10,69 +13,88 @@ class Contenedor{
 
     save(objeto) //Recibe un objeto, lo guarda en el archivo, devuelve el id asignado.
     {
-        const Product = require(this.archivo);
-        console.log(objeto[0])
 
-        if(objeto.nombre === undefined){
+    const collectionFirebase = db.collection(`${this.archivo}`)
 
-            let objetoCambio = {
-                title: objeto[0].title,
-                image: objeto[0].image,
-                price: parseInt(objeto[0].price),
-                stock: parseInt(objeto[0].stock),
-                timestamp: Date.now()
-            }
+    if(objeto.nombre === undefined){
 
-        const nuevo = new Product(objetoCambio);
+        let objetoCambio = {
+                        title: objeto[0].title,
+                        image: objeto[0].image,
+                        price: parseInt(objeto[0].price),
+                        stock: parseInt(objeto[0].stock),
+                        timestamp: Date.now()
+                    }
+        let doc = collectionFirebase.doc(`${uuid()}`);
+        doc.create(objetoCambio)
 
-        const productSave = nuevo.save();
-
-        return productSave;
-
-        }else{
+    }else{
 
         let objetoMensajes = {
-                    nombre: objeto.nombre,
-                    email: objeto.email,
-                    mensaje: objeto.mensaje,
-                    timestamp: Date.now()
-                }
+            nombre: objeto.nombre,
+            email: objeto.email,
+            mensaje: objeto.mensaje,
+            timestamp: Date.now()
+        }
+        let doc = collectionFirebase.doc(`${uuidv4()}`);
+        doc.create(objetoMensajes)
 
-        const nuevo = new Product(objetoMensajes);
-
-        const message = nuevo.save();
-
-        return message;
     }
 
         }
 
     getById(Number) //Recibe un id y devuelve el objeto con ese id, o null si no está.
     {
-        const Product = require(this.archivo);
-        const product = Product.find({_id : Number});
+        const collectionFirebase = db.collection(`${this.archivo}`)
+        const object = collectionFirebase.doc(`${Number}`);
 
-        return product;
+        const item = object.get();
+
+        const response = item.data;
+
+        return response;
     }
 
     getAll() //Devuelve un array con los objetos presentes en el archivo.
     {
-        
-        const Product = require(this.archivo);
 
-        const products = Product.find();
-        
-        return products;
+        const query = db.collection(`${this.archivo}`);
 
+        query.get().then((data)=>{
+
+            let arreglo = [];
+
+            for (let i = 0; i < data.docs.length; i++) {
+                let nuevoObjeto = {
+                    image: data.docs[i]._fieldsProto.image.stringValue,
+                    title: data.docs[i]._fieldsProto.title.stringValue,
+                    price: data.docs[i]._fieldsProto.price.integerValue,
+                    stock:data.docs[i]._fieldsProto.price.integerValue,
+                    timestamp:data.docs[i]._fieldsProto.timestamp.integerValue,
+                }
+
+                arreglo.push(nuevoObjeto)
+
+            }
+
+            if(arreglo[0]){
+                return arreglo
+            }
+
+        });
+        
         }
 
     deleteById(Number) //: void - Elimina del archivo el objeto con el id buscado.
     {
-        const productDelete = Product.findOneAndDelete({_id : Number});
-        return productDelete;
+
+        const query = db.collection(`${this.archivo}`);
+        query.doc(`${Number}`).delete();
+
         }
 
     uploadById(Number, Object){
+
         let objetoActualizado = {
             title: Object.title,
             image: Object.image,
@@ -80,8 +102,8 @@ class Contenedor{
             stock: parseInt(Object.stock)
         }
 
-        const product = Product.findOneAndUpdate({_id : Number}, objetoActualizado);
-        return product;
+        const query = db.collection(`${this.archivo}`);
+        query.doc(`${Number}`).update(objetoActualizado);
     }
     }
 

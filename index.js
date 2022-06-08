@@ -4,7 +4,6 @@ const multer = require("multer");
 const express = require("express");
 const app = express();
 const fs = require("fs");
-const knex = require("./src/dbs");
 
 //server
 
@@ -82,7 +81,7 @@ const {Server} = require("socket.io");
 const io = new Server(server);
 
 const Contenedor = require("./classes/contenedor.class");
-const gestionMensajes = new Contenedor("../models/messages");
+const gestionMensajes = new Contenedor("messages");
 
 //conexion
 
@@ -90,21 +89,10 @@ io.on("connection", (socket)=>{
 
   socket.on("data_msg", (data) => {
     gestionMensajes.save(data)
-        .then(()=>{
-            console.log("guardado!")
-        }).catch((err)=>{
-            console.log(err);
-        })
     io.sockets.emit("chat_back", data)
   });
 
-  gestionMensajes.getAll()
-    .then((json) => {
-      socket.emit("chat_back",json)
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  socket.emit("chat_back",gestionMensajes.getAll())
 
   socket.on("chat_mensaje", (data)=>{
     console.log(data)
